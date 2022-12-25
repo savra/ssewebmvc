@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>SSE example</title>
+</head>
+<body>
+<ul id="stockChanges"></ul>
+<script type="application/javascript">
+    function add(message) {
+        const li = document.createElement("li");
+        li.innerHTML = message;
+        document.getElementById("stockChanges").appendChild(li);
+    }
+
+    const eventSource = new EventSource("/stocks-stream"); //4.1
+
+    eventSource.onmessage = e => {
+        const response = JSON.parse(e.data);
+
+        add('Stock price was changed, new price: ' + response.price + ' $'); //4.2
+    }
+    eventSource.onopen = e => add('Connection opened');
+    eventSource.onerror = e => add('Connection closed');
+</script>
+</body>
+</html>
